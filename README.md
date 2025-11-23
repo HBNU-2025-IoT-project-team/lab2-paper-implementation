@@ -63,6 +63,14 @@ python -u inverting.py --dataset ImageNet --num_classes 1000 --img_shape 224 --b
 
 - 더 많은 명령어는 `run.sh`파일에 제공됩니다.
 
+- (ImageNet-100)[https://www.kaggle.com/datasets/lyfora/processed-imagenet-dataset-192] 다운로드
+
+- 변경된 실행 코드
+
+```bash
+python -u inverting.py --dataset ImageNet --num_classes 100 --img_shape 192 --batch_size 64 --gpu 0 --root "C:\Users\jeonj\OneDrive\바탕 화면\paper-implement\ImageNet-100" --iter 500
+```
+
 #### 2.2 GEN-GIA
 ##### 2.2.1 GGL
 
