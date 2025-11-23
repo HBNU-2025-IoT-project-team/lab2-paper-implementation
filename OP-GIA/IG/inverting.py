@@ -105,7 +105,7 @@ if __name__ == '__main__':
     else:
         data_path = args.root
         model, _ = inversefed.construct_model(args.arch, num_classes=args.num_classes, num_channels=3)
-    loss_fn, _, data_loader = inversefed.construct_dataloaders(args.dataset, defs, data_path=data_path)
+    loss_fn, _, data_loader = inversefed.construct_dataloaders(args.dataset, defs, data_path=data_path, img_shape=args.img_shape)
     model.to(**setup)
     total_params = sum(p.numel() for p in model.parameters())
     print(f"Total parameters: {total_params}")
@@ -137,18 +137,20 @@ if __name__ == '__main__':
 
     # all data needed to be recovered
     ground_truth_all, labels_all = [], []
-    idx = args.idx
-    while len(labels_all) < args.num_images:
-        img, label = data_loader.dataset[idx]
-        idx += 666 if args.dataset == 'ImageNet' else 1
-        if args.dataset in ['CIFAR100', 'ImageNet']:
-            # skip the images with same labels when images <= num_classes
-            if label not in labels_all or len(labels_all) >= args.num_classes:
-                labels_all.append(torch.as_tensor((label,), device=setup['device']))
-                ground_truth_all.append(img.to(**setup))
-        else:
-            labels_all.append(torch.as_tensor((label,), device=setup['device']))
-            ground_truth_all.append(img.to(**setup))
+
+    # The original implementation used a fixed starting index, which fails for smaller datasets.
+    # We now sample num_images random images from the validation set.
+    num_images_to_sample = min(args.num_images, len(data_loader.dataset))
+    if num_images_to_sample < args.num_images:
+        print(f"Warning: num_images has been reduced from {args.num_images} to {num_images_to_sample} to fit the dataset size.")
+
+    # Get a random permutation of indices
+    indices = torch.randperm(len(data_loader.dataset))[:num_images_to_sample]
+
+    for idx in indices:
+        img, label = data_loader.dataset[idx.item()] # Use .item() to get the integer value
+        labels_all.append(torch.as_tensor((label,), device=setup['device']))
+        ground_truth_all.append(img.to(**setup))
 
     # different config for ImageNet and CIFAR
     if args.dataset == 'ImageNet':

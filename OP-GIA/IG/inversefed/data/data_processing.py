@@ -13,7 +13,7 @@ from .data import _build_bsds_sr, _build_bsds_dn
 from .loss import Classification, PSNR
 
 
-def construct_dataloaders(dataset, defs, data_path='~/data', shuffle=True, normalize=True):
+def construct_dataloaders(dataset, defs, data_path='~/data', shuffle=True, normalize=True, img_shape=None):
     """Return a dataloader with given dataset and augmentation, normalize data?."""
     path = os.path.expanduser(data_path)
 
@@ -30,7 +30,7 @@ def construct_dataloaders(dataset, defs, data_path='~/data', shuffle=True, norma
         trainset, validset = _build_mnist_gray(path, defs.augmentations, normalize)
         loss_fn = Classification()
     elif dataset == 'ImageNet':
-        trainset, validset = _build_imagenet(path, defs.augmentations, normalize)
+        trainset, validset = _build_imagenet(path, defs.augmentations, normalize, img_shape=img_shape)
         loss_fn = Classification()
     elif dataset == 'BSDS-SR':
         trainset, validset = _build_bsds_sr(path, defs.augmentations, normalize, upscale_factor=3, RGB=True)
@@ -171,11 +171,13 @@ def _build_mnist_gray(data_path, augmentations=True, normalize=True):
     return trainset, validset
 
 
-def _build_imagenet(data_path, augmentations=True, normalize=True):
+def _build_imagenet(data_path, augmentations=True, normalize=True, img_shape=224):
     """Define ImageNet with everything considered."""
     # Load data
-    trainset = torchvision.datasets.ImageNet(root=data_path, split='train', transform=transforms.ToTensor())
-    validset = torchvision.datasets.ImageNet(root=data_path, split='val', transform=transforms.ToTensor())
+    train_path = os.path.join(data_path, 'train')
+    val_path = os.path.join(data_path, 'val')
+    trainset = torchvision.datasets.ImageFolder(root=train_path, transform=transforms.ToTensor())
+    validset = torchvision.datasets.ImageFolder(root=val_path, transform=transforms.ToTensor())
 
     if imagenet_mean is None:
         data_mean, data_std = _get_meanstd(trainset)
@@ -184,13 +186,13 @@ def _build_imagenet(data_path, augmentations=True, normalize=True):
 
     # Organize preprocessing
     transform = transforms.Compose([
-        transforms.Resize(256),
-        transforms.CenterCrop(224),
+        transforms.Resize(img_shape),
+        transforms.CenterCrop(img_shape),
         transforms.ToTensor(),
         transforms.Normalize(data_mean, data_std) if normalize else transforms.Lambda(lambda x : x)])
     if augmentations:
         transform_train = transforms.Compose([
-            transforms.RandomResizedCrop(224),
+            transforms.RandomResizedCrop(img_shape),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             transforms.Normalize(data_mean, data_std) if normalize else transforms.Lambda(lambda x : x)])
