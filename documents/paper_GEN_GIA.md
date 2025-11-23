@@ -1,5 +1,11 @@
 # GEN-GIA (생성 기반 그래디언트 역전 공격)
 
+## 목차
+1. [GEN-GIA의 기본 원리: 생성 모델 활용](#1-gen-gia의-기본-원리-생성-모델-활용-generator-based-reconstruction)
+2. [세부 유형별 특징 및 한계](#2-세부-유형별-특징-및-한계)
+3. [실제 위협 수준과 종합 평가](#3-실제-위협-수준과-종합-평가)
+4. [요약](#4-요약)
+
 ## 1. GEN-GIA의 기본 원리: 생성 모델 활용 (Generator-based Reconstruction)
 
 - GEN-GIA는 입력 데이터를 직접 최적화하는 OP-GIA와 달리, 생성자(Generator)를 활용하여 입력 데이터를 재구성하는 방식입니다.
