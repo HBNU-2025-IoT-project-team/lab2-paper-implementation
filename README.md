@@ -39,11 +39,13 @@ A Deep Dive into Gradient Inversion Attacks](https://pengxin-guo.github.io/FLPri
 #### 1.1 레포지토리 복제
 
 ```bash
-git clone https://github.com/1wrx1/GIA.git
-cd GIA
+git clone https://github.com/HBNU-2025-IoT-project-team/lab2-paper-implementation.git
+cd lab2-paper-implementation
 ```
 
 #### 1.2 환경 설치
+
+※ 현재 `environment.yml`은 Windows OS를 기준으로 작성되었습니다.
 
 ```bash
 conda env create -f environment.yml 
@@ -68,8 +70,11 @@ python -u inverting.py --dataset ImageNet --num_classes 1000 --img_shape 224 --b
 - 변경된 실행 코드
 
 ```bash
-python -u inverting.py --dataset ImageNet --num_classes 100 --img_shape 192 --batch_size 64 --gpu 0 --root "C:\Users\jeonj\OneDrive\바탕 화면\paper-implement\ImageNet-100" --iter 500
+python -u inverting.py --dataset ImageNet --num_classes 100 --img_shape 192 --batch_size 64 --gpu 0 --root $root --iter 500
 ```
+- `num_classes` : 실험 당시 ImageNet-100 데이터셋을 활용함에 따라 `100`으로 설정
+- `iter` : 최적화 반복횟수로 추가 활동에서의 변경 대상
+- `dataset` : 구현체에서의 모델이 ImageNet을 기준으로 학습하여 다른 파라미터의 영향을 최소화하기 위해 ImageNet을 활용 데이터셋으로 설정
 
 #### 2.2 GEN-GIA
 ##### 2.2.1 GGL
