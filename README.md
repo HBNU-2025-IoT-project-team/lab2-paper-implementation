@@ -1,6 +1,8 @@
 # LAB 2: 논문 분석
 ### 본 레포지토리는 2025년 하반기 국립한밭대학교 강의 "사물인터넷"의 두 번째 프로젝트인 '논문 분석'을 위한 레포지토리입니다
 
+- [내용 요약 및 개요 프레젠테이션](./presentation/lab2-presentation.pdf)
+
 - 해당 논문: [Exploring the Vulnerabilities of Federated Learning: A Deep Dive into Gradient Inversion Attacks](https://huggingface.co/papers/2503.11514)
 - 저자:
   - [Pengxin Guo](https://huggingface.co/gpx333)
